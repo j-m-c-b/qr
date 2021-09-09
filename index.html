@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            color: white;
+            background-color: black;
+        }
+
+        a,
+        a:visited {
+            color: rgb(194, 170, 38);
+        }
+
+        input,
+        textarea {
+            color: white;
+            background-color: rgb(71, 94, 129);
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="qr-reader" style="width:500px"></div>
+    <div id="qr-reader-results"></div>
+
+    <div id="list"></div>
+    <script src="html5-qrcode.min.js"></script>
+    <script>
+        let list = document.getElementById("list");
+        function docReady(fn) {
+            // see if DOM is already available
+            if (document.readyState === "complete"
+                || document.readyState === "interactive") {
+                // call on next available tick
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
+        }
+        let counter = 0;
+
+        docReady(function () {
+            var resultContainer = document.getElementById('qr-reader-results');
+            var lastResult, countResults = 0;
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    ++countResults;
+                    lastResult = decodedText;
+                    // Handle on success condition with the decoded message.
+                    console.log(`Scan result ${decodedText}`, decodedResult);
+
+
+                    show(decodedText)
+
+                }
+            }
+
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 250 });
+            html5QrcodeScanner.render(onScanSuccess);
+        });
+        let inputs = [];
+
+        function show(text) {
+            let input = document.createElement("textarea");
+            let button = document.createElement("button");
+
+            // inputs.push(input);
+
+
+            input.value = decodeURI(text);
+
+
+            button.innerText = "Copy";
+
+
+            button.addEventListener("click", (e) => {
+
+                input.select();
+                document.execCommand("Copy");
+
+
+
+            });
+            list.appendChild(input);
+            list.appendChild(button);
+            list.appendChild(document.createElement("br"));
+        }
+    </script>
+</body>
+
+</html>
